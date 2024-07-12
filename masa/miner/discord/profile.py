@@ -21,20 +21,14 @@ class DiscordProfileRequest(MasaProtocolRequest):
 
         # discord_profile = self.format_profile(response_json)
 
-        return DiscordProfileObject(**[
+        return DiscordProfileObject(**
             {
-                "ID": "1234567890",
-                "Username": "JohnDoe",
-                "Discriminator": "1234",
-                "Avatar": "https://example.com/avatar1.png"
-            },
-            {
-                "ID": "0987654321",
+                "ID": user_id,
                 "Username": "JaneSmith",
                 "Discriminator": "5678",
                 "Avatar": "https://example.com/avatar2.png"
             }
-        ])
+        )
 
     def format_profile(self, data: requests.Response) -> DiscordProfileObject:
         bt.logging.info(f"Formatting discord profile data: {data}")
