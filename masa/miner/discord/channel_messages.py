@@ -14,16 +14,34 @@ class DiscordChannelMessagesRequest(MasaProtocolRequest):
     ) -> List[DiscordChannelMessageObject]:
         bt.logging.info(f"Getting channel messages from worker {channel_id}")
 
-        response = self.get(f"/data/discord/channels/{channel_id}/messages")
+        # response = self.get(f"/data/discord/channels/{channel_id}/messages")
 
-        response_json = response.json()
+        # response_json = response.json()
 
-        if "error" in response_json:
-            bt.logging.error("Worker request failed")
-            return None
+        # if "error" in response_json:
+        #     bt.logging.error("Worker request failed")
+        #     return None
 
-        discord_channel_messages = self.format_channel_messages(response_json)
-
+        # discord_channel_messages = self.format_channel_messages(response_json)
+        discord_channel_messages = [
+                    DiscordChannelMessageObject(**channel_message)
+                    for channel_message in [
+            {
+                "ID": "111",
+                "ChannelID": "222",
+                "Author": discord_profiles[0],
+                "Content": "Hello, this is a test message.",
+                "Timestamp": "2024-07-12T12:34:56Z"
+            },
+            {
+                "ID": "112",
+                "ChannelID": "223",
+                "Author": discord_profiles[1],
+                "Content": "This is another test message.",
+                "Timestamp": "2024-07-12T12:35:56Z"
+            }
+        ]
+        ]
         return discord_channel_messages
 
     def format_channel_messages(

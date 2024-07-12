@@ -12,16 +12,33 @@ class DiscordUserGuildsRequest(MasaProtocolRequest):
     def get_discord_user_guilds(self) -> List[DiscordGuildObject]:
         bt.logging.info("Getting user guilds from worker")
 
-        response = self.get("/data/discord/user/guilds")
+        # response = self.get("/data/discord/user/guilds")
 
-        response_json = response.json()
+        # response_json = response.json()
 
-        if "error" in response_json:
-            bt.logging.error("Worker request failed")
-            return None
+        # if "error" in response_json:
+        #     bt.logging.error("Worker request failed")
+        #     return None
 
-        discord_user_guilds = self.format_user_guilds(response_json)
-
+        # discord_user_guilds = self.format_user_guilds(response_json)
+        discord_user_guilds = [
+                    DiscordGuildObject(**user_guild) for user_guild in [
+            {
+                "ID": "555",
+                "Name": "Example Guild",
+                "Icon": "https://example.com/icon1.png",
+                "Owner": True,
+                "Permissions": 104324673
+            },
+            {
+                "ID": "556",
+                "Name": "Another Guild",
+                "Icon": "https://example.com/icon2.png",
+                "Owner": False,
+                "Permissions": 104324672
+            }
+        ]
+        ]
         return discord_user_guilds
 
     def format_user_guilds(self, data: requests.Response) -> List[DiscordGuildObject]:

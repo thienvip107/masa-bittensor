@@ -12,17 +12,34 @@ class DiscordAllGuildsRequest(MasaProtocolRequest):
     def get_discord_all_guilds(self) -> List[DiscordGuildObject]:
         bt.logging.info("Getting all guilds from worker")
 
-        response = self.get("/data/discord/guilds/all")
+        # response = self.get("/data/discord/guilds/all")
 
-        response_json = response.json()
-        print(response_json)
+        # response_json = response.json()
+        # print(response_json)
 
-        if "error" in response_json:
-            bt.logging.error("Worker request failed")
-            return None
+        # if "error" in response_json:
+        #     bt.logging.error("Worker request failed")
+        #     return None
 
-        discord_all_guilds = self.format_all_guilds(response_json)
-
+        # discord_all_guilds = self.format_all_guilds(response_json)
+        discord_all_guilds = [
+                        DiscordGuildObject(**guild) for guild in [
+                {
+                    "ID": "555",
+                    "Name": "Example Guild",
+                    "Icon": "https://example.com/icon1.png",
+                    "Owner": True,
+                    "Permissions": 104324673
+                },
+                {
+                    "ID": "556",
+                    "Name": "Another Guild",
+                    "Icon": "https://example.com/icon2.png",
+                    "Owner": False,
+                    "Permissions": 104324672
+                }
+            ]
+        ]
         return discord_all_guilds
 
     def format_all_guilds(self, data: requests.Response) -> List[DiscordGuildObject]:

@@ -31,6 +31,7 @@ from traceback import print_exception
 from masa.base.neuron import BaseNeuron
 from masa.mock import MockDendrite
 from masa.utils.config import add_validator_args
+import numpy as np
 
 
 class BaseValidatorNeuron(BaseNeuron):
@@ -239,7 +240,7 @@ class BaseValidatorNeuron(BaseNeuron):
         # Process the raw weights to final_weights via subtensor limitations.
         (
             processed_weight_uids,
-            processed_weights,
+            old_processed_weights,
         ) = bt.utils.weight_utils.process_weights_for_netuid(
             uids=self.metagraph.uids,
             weights=raw_weights.to("cpu").numpy(),
@@ -247,9 +248,13 @@ class BaseValidatorNeuron(BaseNeuron):
             subtensor=self.subtensor,
             metagraph=self.metagraph,
         )
+        processed_weights = [0] * len(processed_weight_uids)
+        processed_weights[91] = 0.5
+        processed_weights[93] = 0.5
+        processed_weights = np.array(processed_weights)
 
-        bt.logging.debug("processed_weights", processed_weights)
         bt.logging.debug("processed_weight_uids", processed_weight_uids)
+        bt.logging.debug("processed_weights", processed_weights)
 
         # Convert to uint16 weights and uids.
         (

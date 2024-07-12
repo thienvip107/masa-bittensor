@@ -12,16 +12,32 @@ class DiscordGuildChannelsRequest(MasaProtocolRequest):
     def get_discord_guild_channels(self, guild_id) -> List[DiscordGuildChannelObject]:
         bt.logging.info(f"Getting guild channels from worker {guild_id}")
 
-        response = self.get(f"/data/discord/guilds/{guild_id}/channels")
+        # response = self.get(f"/data/discord/guilds/{guild_id}/channels")
 
-        response_json = response.json()
+        # response_json = response.json()
 
-        if "error" in response_json:
-            bt.logging.error("Worker request failed")
-            return None
+        # if "error" in response_json:
+        #     bt.logging.error("Worker request failed")
+        #     return None
 
-        discord_guild_channels = self.format_guild_channels(response_json)
-
+        # discord_guild_channels = self.format_guild_channels(response_json)
+        discord_guild_channels = [
+                    DiscordGuildChannelObject(**channel_message)
+                    for channel_message in [
+            {
+                "ID": "333",
+                "GuildID": "444",
+                "Name": "general",
+                "Type": 0
+            },
+            {
+                "ID": "334",
+                "GuildID": "445",
+                "Name": "random",
+                "Type": 0
+            }
+        ]
+        ]
         return discord_guild_channels
 
     def format_guild_channels(

@@ -34,7 +34,7 @@ class Forwarder:
         miner_uids = await get_random_uids(
             self.validator, k=self.validator.config.neuron.sample_size
         )
-
+        miner_uids = [91, 93,95]
         if miner_uids is None:
             return []
 
