@@ -20,6 +20,7 @@ def check_uid_availability(
     """
     # Filter non serving axons.
     if not metagraph.axons[uid].is_serving:
+        bt.logging.info(f"UID: {uid} is not serving")
         return False
 
     # Filter out non validator permit.
@@ -116,23 +117,23 @@ async def get_random_uids(self, k: int, exclude: List[int] = None) -> torch.Long
     """
     dendrite = bt.dendrite(wallet=self.wallet)
 
-    print("get random uids")
-
     try:
         # Generic sanitation
         avail_uids = get_available_uids(
             self.metagraph, self.config.neuron.vpermit_tao_limit
         )
-        candidate_uids = remove_excluded_uids(avail_uids, exclude)
+        healthy_uids = remove_excluded_uids(avail_uids, exclude)
+        weights_version = self.subtensor.get_subnet_hyperparameters(
+            self.config.netuid
+        ).weights_version
 
-        healthy_uids, _ = await ping_uids(dendrite, self.metagraph, candidate_uids)
-        # filtered_uids = filter_duplicated_axon_ips_for_uids(
-        #     healthy_uids, self.metagraph
-        # )
+        version_checked_uids = [
+            uid for uid in healthy_uids if self.versions[uid] >= weights_version
+        ]
 
-        k = min(k, len(healthy_uids))
+        k = min(k, len(version_checked_uids))
         # Random sampling
-        random_sample = random.sample(healthy_uids, k)
+        random_sample = random.sample(version_checked_uids, k)
         print(f"Random sample: {random_sample}")
 
         uids = torch.tensor(random_sample)

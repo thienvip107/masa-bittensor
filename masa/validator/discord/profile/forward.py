@@ -21,7 +21,7 @@ import bittensor as bt
 from masa.api.request import Request, RequestType
 from masa.types.discord import DiscordProfileObject
 from masa.validator.forwarder import Forwarder
-from masa.validator.discord.profile.reward import get_rewards
+from masa.miner.discord.profile import DiscordProfileRequest
 
 
 class DiscordProfileForwarder(Forwarder):
@@ -29,12 +29,13 @@ class DiscordProfileForwarder(Forwarder):
     def __init__(self, validator):
         super(DiscordProfileForwarder, self).__init__(validator)
 
-    async def forward_query(self, query):
+    async def forward_query(self, query, limit):
         try:
             return await self.forward(
                 request=Request(query=query, type=RequestType.DISCORD_PROFILE.value),
-                get_rewards=get_rewards,
                 parser_object=DiscordProfileObject,
+                source_method=DiscordProfileRequest().get_profile,
+                limit=limit,
             )
 
         except Exception as e:

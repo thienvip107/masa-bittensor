@@ -21,7 +21,7 @@ import bittensor as bt
 from masa.api.request import Request, RequestType
 from masa.validator.forwarder import Forwarder
 from masa.validator.discord.guild_channels.parser import guild_channels_parser
-from masa.validator.discord.guild_channels.reward import get_rewards
+from masa.miner.discord.guild_channels import DiscordGuildChannelsRequest
 
 
 class DiscordGuildChannelsForwarder(Forwarder):
@@ -29,14 +29,15 @@ class DiscordGuildChannelsForwarder(Forwarder):
     def __init__(self, validator):
         super(DiscordGuildChannelsForwarder, self).__init__(validator)
 
-    async def forward_query(self, query):
+    async def forward_query(self, query, limit):
         try:
             return await self.forward(
                 request=Request(
                     query=query, type=RequestType.DISCORD_GUILD_CHANNELS.value
                 ),
-                get_rewards=get_rewards,
                 parser_method=guild_channels_parser,
+                source_method=DiscordGuildChannelsRequest().get_discord_guild_channels,
+                limit=limit,
             )
 
         except Exception as e:

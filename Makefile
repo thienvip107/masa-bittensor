@@ -11,18 +11,21 @@ INCENTIVIZED_TESTNET_ENDPOINT = ws://100.28.51.29:9945
 INCENTIVIZED_TESTNET = chain_endpoint $(INCENTIVIZED_TESTNET_ENDPOINT)
 
 TESTNET = network test
+MAINNET = network finney
 
-NETUID = 1 # devnet
+# NETUID = 1 # devnet
 # NETUID = 165 # testnet
+NETUID = 42 # mainnet
 
 
 ########################################################################
 #####                       SELECT YOUR ENV                        #####
 ########################################################################
 # SUBTENSOR_ENVIRONMENT = $(LOCALNET)
-SUBTENSOR_ENVIRONMENT = $(INCENTIVIZED_TESTNET)
 # SUBTENSOR_ENVIRONMENT = $(DEVNET)
+# SUBTENSOR_ENVIRONMENT = $(INCENTIVIZED_TESTNET)
 # SUBTENSOR_ENVIRONMENT = $(TESTNET)
+SUBTENSOR_ENVIRONMENT = $(MAINNET)
 
 
 ########################################################################
@@ -38,6 +41,10 @@ fund-validator-wallet:
 
 fund-miner-wallet:
 	btcli wallet faucet --wallet.name miner --subtensor.$(SUBTENSOR_ENVIRONMENT)
+
+## Send TAO
+send:
+	btcli w transfer --subtensor.$(SUBTENSOR_ENVIRONMENT)
 
 ## Subnet creation
 create-subnet:
@@ -130,6 +137,9 @@ hyperparameters:
 
 metagraph:
 	btcli subnets metagraph --subtensor.$(SUBTENSOR_ENVIRONMENT) --netuid $(NETUID)
+
+set-hyperparam:
+	btcli sudo set --param weights_version --value 10 --netuid $(NETUID) --subtensor.$(SUBTENSOR_ENVIRONMENT)
 
 ########################################################################
 #####                   DOCKER COMPOSE COMMANDS                    #####

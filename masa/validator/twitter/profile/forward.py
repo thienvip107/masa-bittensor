@@ -20,8 +20,8 @@
 import bittensor as bt
 from masa.api.request import Request, RequestType
 from masa.validator.forwarder import Forwarder
-from masa.validator.twitter.profile.reward import get_rewards
 from masa.types.twitter import TwitterProfileObject
+from masa.miner.twitter.profile import TwitterProfileRequest
 
 
 class TwitterProfileForwarder(Forwarder):
@@ -29,12 +29,13 @@ class TwitterProfileForwarder(Forwarder):
     def __init__(self, validator):
         super(TwitterProfileForwarder, self).__init__(validator)
 
-    async def forward_query(self, query):
+    async def forward_query(self, query, limit):
         try:
             return await self.forward(
                 request=Request(query=query, type=RequestType.TWITTER_PROFILE.value),
-                get_rewards=get_rewards,
                 parser_object=TwitterProfileObject,
+                source_method=TwitterProfileRequest().get_profile,
+                limit=limit,
             )
 
         except Exception as e:

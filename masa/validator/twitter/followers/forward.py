@@ -20,8 +20,8 @@
 import bittensor as bt
 from masa.api.request import Request, RequestType
 from masa.validator.forwarder import Forwarder
-from masa.validator.twitter.followers.reward import get_rewards
 from masa.validator.twitter.followers.parser import followers_parser
+from masa.miner.twitter.followers import TwitterFollowersRequest
 
 
 class TwitterFollowersForwarder(Forwarder):
@@ -29,12 +29,13 @@ class TwitterFollowersForwarder(Forwarder):
     def __init__(self, validator):
         super(TwitterFollowersForwarder, self).__init__(validator)
 
-    async def forward_query(self, query):
+    async def forward_query(self, query, limit):
         try:
             return await self.forward(
                 request=Request(query=query, type=RequestType.TWITTER_FOLLOWERS.value),
-                get_rewards=get_rewards,
                 parser_method=followers_parser,
+                source_method=TwitterFollowersRequest().get_followers,
+                limit=limit,
             )
 
         except Exception as e:
